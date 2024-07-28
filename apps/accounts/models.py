@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 
 from apps.accounts.managers import UserManager
+from apps.utils.base_model import BaseModel
 
 
 class User(AbstractBaseUser):
@@ -28,3 +29,16 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class OtpCode(BaseModel):
+    phone_number = models.CharField(max_length=11, verbose_name="Phone Number")
+    code = models.PositiveSmallIntegerField(verbose_name="OTP Code")
+
+    def __str__(self):
+        return f'{self.phone_number} - {self.code} - {self.created_at}'
+
+    class Meta:
+        db_table = 'otp_code'
+        verbose_name = 'OTP Code'
+        verbose_name_plural = 'OTP Codes'

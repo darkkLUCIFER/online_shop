@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from apps.accounts.forms import UserChangeForm, UserCreationForm
-from apps.accounts.models import User
+from apps.accounts.models import User, OtpCode
 
 
 class UserAdmin(BaseUserAdmin):
@@ -35,3 +35,8 @@ admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
+
+
+@admin.register(OtpCode)
+class OtpCodeAdmin(admin.ModelAdmin):
+    list_display = ["phone_number", "code", "created_at"]
