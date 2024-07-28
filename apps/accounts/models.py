@@ -1,5 +1,8 @@
+import datetime
+
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
+from django.utils import timezone
 
 from apps.accounts.managers import UserManager
 from apps.utils.base_model import BaseModel
@@ -37,6 +40,11 @@ class OtpCode(BaseModel):
 
     def __str__(self):
         return f'{self.phone_number} - {self.code} - {self.created_at}'
+
+    @property
+    def is_expired(self):
+        expiration_time = self.created_at + datetime.timedelta(minutes=2)
+        return timezone.now() > expiration_time
 
     class Meta:
         db_table = 'otp_code'

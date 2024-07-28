@@ -59,6 +59,13 @@ class UserVerifyOtpView(View):
             otp_code = cd['code']
 
             if otp_code == code_instance.code:
+
+                # check for code expired time
+                if code_instance.is_expired:
+                    messages.error(request, 'OTP code has expired', extra_tags='danger')
+                    code_instance.delete()
+                    return redirect('accounts:user_register', {'form': form})
+
                 user = User.objects.create_user(phone_number=user_session.get('phone_number'),
                                                 email=user_session.get('email'),
                                                 full_name=user_session.get('full_name'),
@@ -70,4 +77,6 @@ class UserVerifyOtpView(View):
             else:
                 messages.error(request, 'wrong otp code', extra_tags='danger')
                 return redirect('accounts:verify_otp_code')
+
+        code_instance.delete()
         return redirect('home:home')
