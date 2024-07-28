@@ -1,12 +1,12 @@
 import random
 
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.views import View
 
-from apps.accounts.forms import UserRegisterForm, VerifyOtpCodeForm
+from apps.accounts.forms import UserRegisterForm, VerifyOtpCodeForm, UserLoginForm
 from apps.accounts.models import OtpCode, User
 from apps.utils.otp import send_otp_code
 
@@ -80,3 +80,41 @@ class UserVerifyOtpView(View):
 
         code_instance.delete()
         return redirect('home:home')
+
+
+class UserLoginView(View):
+    form_class = UserLoginForm
+    template_name = 'accounts/login.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.next = request.GET.get('next')
+        return super().setup(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            phone_number = cd['phone_number']
+            password = cd['password']
+
+            user = authenticate(username=phone_number, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, message='You are now logged in', extra_tags='alert-success')
+                if self.next:
+                    return redirect(self.next)
+                else:
+                    return redirect('home:home')
+
+            messages.error(request, message='Invalid credentials', extra_tags='alert-danger')
+
+        return render(request, self.template_name, {'form': form})

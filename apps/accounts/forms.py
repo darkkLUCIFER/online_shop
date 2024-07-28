@@ -85,3 +85,8 @@ class UserRegisterForm(forms.Form):
 
 class VerifyOtpCodeForm(forms.Form):
     code = forms.IntegerField()
+
+
+class UserLoginForm(forms.Form):
+    phone_number = forms.CharField(widget=forms.TextInput, max_length=11)
+    password = forms.CharField(widget=forms.PasswordInput)
