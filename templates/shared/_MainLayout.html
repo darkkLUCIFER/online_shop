@@ -7,13 +7,8 @@
     {% include 'shared/_HeaderRefrences.html' %}
     <title>StackOverflow</title>
 
-    <style>
-        .jumbotron {
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #e9ecef;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static '../../static/css/base_styles.css' %}">
+    {% block extra_headers %}{% endblock %}
 </head>
 <body>
 
