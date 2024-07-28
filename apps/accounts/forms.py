@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 
 from apps.accounts.models import User
@@ -47,3 +48,40 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["email", "phone_number", "full_name", "password", "last_login"]
+
+
+class UserRegisterForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput, label="Email")
+    full_name = forms.CharField(label="Full Name", widget=forms.TextInput)
+    phone = forms.CharField(label="Phone Number", widget=forms.TextInput, max_length=11)
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
+
+    def clean_confirm_password(self):
+        password = self.cleaned_data['password']
+        confirm_password = self.cleaned_data['confirm_password']
+
+        if password and confirm_password and password != confirm_password:
+            raise ValidationError("Passwords don't match")
+
+        return confirm_password
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        email_existence = User.objects.filter(email=email)
+        if email_existence.exists():
+            raise ValidationError("Email already registered")
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+
+        phone_existence = User.objects.filter(phone_number=phone)
+        if phone_existence.exists():
+            raise ValidationError("Phone number already registered")
+        return phone
+
+
+class VerifyOtpCodeForm(forms.Form):
+    code = forms.IntegerField()
