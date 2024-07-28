@@ -1,8 +1,9 @@
 import random
 
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -118,3 +119,10 @@ class UserLoginView(View):
             messages.error(request, message='Invalid credentials', extra_tags='alert-danger')
 
         return render(request, self.template_name, {'form': form})
+
+
+class UserLogOutView(LoginRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'You are now logged out', extra_tags='alert-success')
+        return redirect('home:home')
