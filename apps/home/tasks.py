@@ -1,4 +1,5 @@
 from apps.utils.bucket import Bucket
+from celery import shared_task
 
 
 # TODO: can be async!?
@@ -8,3 +9,8 @@ def get_all_bucket_objects_task():
         return result['Contents']
     else:
         return None
+
+
+@shared_task
+def delete_object_task(key):
+    Bucket.get_instance().delete_object(key)
