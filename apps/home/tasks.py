@@ -14,3 +14,8 @@ def get_all_bucket_objects_task():
 @shared_task
 def delete_object_task(key):
     Bucket.get_instance().delete_object(key)
+
+
+@shared_task
+def download_object_task(key):
+    Bucket.get_instance().download_object(key)

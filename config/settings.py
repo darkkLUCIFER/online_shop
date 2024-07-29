@@ -155,3 +155,4 @@ if os.environ.get('USE_ARVAN_STORAGE'):
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_SERVICE_NAME = os.environ.get('AWS_SERVICE_NAME')
     AWS_S3_FILE_OVERWRITE = os.environ.get('AWS_S3_FILE_OVERWRITE')
+    AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
