@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
 
-from apps.home.tasks import get_all_bucket_objects_task, delete_object_task
+from apps.home.tasks import get_all_bucket_objects_task, delete_object_task, download_object_task
 from apps.products.models import Product
 
 
@@ -32,4 +32,11 @@ class DeleteBucketObjectView(View):
     def get(self, request, key):
         delete_object_task.delay(key)
         messages.success(request, 'your object will be delete soon ', extra_tags='info')
+        return redirect('home:bucket')
+
+
+class DownloadBucketObjectView(View):
+    def get(self, request, key):
+        download_object_task.delay(key)
+        messages.success(request, 'your object will be download soon ', extra_tags='info')
         return redirect('home:bucket')
