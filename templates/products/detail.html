@@ -1,0 +1,11 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block content %}
+    <h2>{{ product.name }}</h2>
+    <small>{{ product.created_at }}</small>
+    <br>
+    <p>{{ product.price }} تومن</p>
+    <img src="{{ product.image.url }}" alt="">
+    <p>{{ product.description }}</p>
+{% endblock %}
