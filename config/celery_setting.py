@@ -11,7 +11,7 @@ celery_app = Celery('config')
 # Load task modules from all registered Django apps.
 celery_app.autodiscover_tasks()
 
-celery_app.conf.broker_url = "amqp://rabbitmq"
+celery_app.conf.broker_url = "amqp://"
 celery_app.conf.result_backend = "rpc://"
 celery_app.conf.task_serializer = "json"
 celery_app.conf.result_serializer = "pickle"
