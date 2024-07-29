@@ -19,3 +19,8 @@ def delete_object_task(key):
 @shared_task
 def download_object_task(key):
     Bucket.get_instance().download_object(key)
+
+
+@shared_task
+def upload_object_task(file_path):
+    Bucket.get_instance().upload_object(file_path)
