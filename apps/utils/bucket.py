@@ -1,3 +1,5 @@
+import os
+
 import boto3
 from django.conf import settings
 
@@ -31,3 +33,14 @@ class Bucket:
     def delete_object(self, key):
         self.connection.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
         return True
+
+    def download_object(self, key):
+        file_name = key.split('/')[-1]
+        aws_local_storage_dir = settings.AWS_LOCAL_STORAGE
+
+        # Check if the directory exists, create it if it doesn't
+        if not os.path.exists(aws_local_storage_dir):
+            os.makedirs(aws_local_storage_dir)
+
+        with open(settings.AWS_LOCAL_STORAGE + file_name, "wb") as f:
+            self.connection.download_fileobj(settings.AWS_STORAGE_BUCKET_NAME, key, f)
