@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from apps.utils.base_model import BaseModel
 
@@ -26,6 +27,9 @@ class Product(BaseModel):
     description = models.TextField(verbose_name='Description', blank=True, null=True)
     price = models.IntegerField(verbose_name='Price')
     available = models.BooleanField(verbose_name='Available', default=True)
+
+    def get_absolute_url(self):
+        return reverse('products:product_detail', kwargs={'slug': self.slug})
 
     def __str__(self):
         return f'{self.name} - {self.category}'
