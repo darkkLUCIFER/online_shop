@@ -44,3 +44,20 @@ class Bucket:
 
         with open(settings.AWS_LOCAL_STORAGE + file_name, "wb") as f:
             self.connection.download_fileobj(settings.AWS_STORAGE_BUCKET_NAME, key, f)
+
+    def upload_object(self, file_path, key=None):
+        """
+        Upload a file to the S3 bucket.
+
+        Args:
+            file_path (str): The path to the local file to upload.
+            key (str): The desired key in the S3 bucket.
+
+        Returns:
+            None
+        """
+        if key is None:
+            key = os.path.basename(file_path)
+
+        with open(file_path, "rb") as f:
+            self.connection.upload_fileobj(f, settings.AWS_STORAGE_BUCKET_NAME, key)
