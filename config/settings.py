@@ -148,11 +148,34 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # ARVAN CLOUD STORAGE
 if os.environ.get('USE_ARVAN_STORAGE'):
-    DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE')
+    # Set the default storage backend for handling uploaded media files.
+    # This should point to a storage backend like S3 or an S3-compatible service.
+    DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE')  # e.g., 'storages.backends.s3boto3.S3Boto3Storage'
+
+    # Set the storage backend for handling static files (e.g., CSS, JavaScript, images).
+    # Uncomment the line below to enable storing static files in S3 or a compatible service.
+    # STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+
+    # AWS Access Key ID for authenticating with the S3 service.
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+
+    # AWS Secret Access Key for authenticating with the S3 service.
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
+    # The endpoint URL for the S3-compatible storage service.
+    # This is specific to Arvan Cloud or any other S3-compatible service you're using.
     AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
+
+    # The name of the S3 bucket where your files will be stored.
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
+    # The service name, typically 's3', but can vary based on the provider.
     AWS_SERVICE_NAME = os.environ.get('AWS_SERVICE_NAME')
+
+    # Determines whether files with the same name should overwrite existing files.
+    # Typically set to 'False' to avoid unintentional overwrites.
     AWS_S3_FILE_OVERWRITE = os.environ.get('AWS_S3_FILE_OVERWRITE')
+
+    # Local storage path for storing files temporarily before uploading to S3.
+    # This is useful for debugging or when working in environments without immediate S3 access.
     AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
