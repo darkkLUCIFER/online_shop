@@ -29,7 +29,7 @@ class Bucket:
     @classmethod
     def get_instance(cls):
         if cls.__instance is None:
-            cls.__instance = cls.__new__(cls)
+            cls.__instance = Bucket()
 
         return cls.__instance
 
