@@ -1,5 +1,4 @@
 import os
-import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -11,6 +10,7 @@ from django.views import View
 from apps.home.forms import UploadBucketObjectForm
 from apps.home.tasks import get_all_bucket_objects_task, delete_object_task, download_object_task, upload_object_task
 from apps.products.models import Product
+from apps.utils.custom_mixins import IsAdminUserMixin
 
 
 class HomeView(View):
@@ -22,7 +22,7 @@ class HomeView(View):
         return render(request, 'home/home.html', context)
 
 
-class BucketHomeView(View):
+class BucketHomeView(IsAdminUserMixin, View):
     template_name = 'home/bucket.html'
     form_class = UploadBucketObjectForm
 
@@ -48,14 +48,14 @@ class BucketHomeView(View):
         return redirect('home:bucket')
 
 
-class DeleteBucketObjectView(View):
+class DeleteBucketObjectView(IsAdminUserMixin, View):
     def get(self, request, key):
         delete_object_task.delay(key)
         messages.success(request, 'your object will be delete soon ', extra_tags='info')
         return redirect('home:bucket')
 
 
-class DownloadBucketObjectView(View):
+class DownloadBucketObjectView(IsAdminUserMixin, View):
     def get(self, request, key):
         download_object_task.delay(key)
         messages.success(request, 'your object will be download soon ', extra_tags='info')
