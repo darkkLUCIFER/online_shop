@@ -97,6 +97,5 @@ class Bucket:
         if key is None:
             key = os.path.basename(file_path)
 
-        # Open the file and upload it to the S3 bucket
-        with open(file_path, "rb") as f:
-            self.connection.upload_fileobj(f, settings.AWS_STORAGE_BUCKET_NAME, key)
+        # upload file to the S3 bucket
+        self.connection.upload_fileobj(file_path, settings.AWS_STORAGE_BUCKET_NAME, key)
