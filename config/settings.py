@@ -135,10 +135,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -179,3 +175,10 @@ if os.environ.get('USE_ARVAN_STORAGE'):
     # Local storage path for storing files temporarily before uploading to S3.
     # This is useful for debugging or when working in environments without immediate S3 access.
     AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
+
+    # Set MEDIA_URL to point to the S3 bucket's URL
+    MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_ENDPOINT_URL}/media/'
+else:
+    # Use local storage for media files if not using cloud storage
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / "media"
