@@ -38,6 +38,7 @@ class UserRegisterView(View):
                 'full_name': cd['full_name'],
                 'password': cd['password']
             }
+            request.session.set_expiry(300)  # Session expires in 5 minutes
             messages.success(request, 'we send you otp code', extra_tags='success')
             return redirect('accounts:verify_otp_code')
         return render(request, self.template_name, {'form': form})
@@ -70,9 +71,13 @@ class UserVerifyOtpView(View):
                 user = User.objects.create_user(phone_number=user_session.get('phone_number'),
                                                 email=user_session.get('email'),
                                                 full_name=user_session.get('full_name'),
-                                                password=make_password(user_session.get('password')))
+                                                password=user_session.get('password'))
                 code_instance.delete()
                 login(request, user)
+
+                # remove user_registration_info data from session after success verify
+                request.session.pop('user_registration_info', None)
+
                 messages.success(request, 'you registered', extra_tags='success')
                 return redirect('home:home')
             else:
@@ -107,7 +112,7 @@ class UserLoginView(View):
             phone_number = cd['phone_number']
             password = cd['password']
 
-            user = authenticate(request, username=phone_number, password=password)
+            user = authenticate(username=phone_number, password=password)
             if user is not None:
                 login(request, user)
                 messages.success(request, message='You are now logged in', extra_tags='alert-success')
