@@ -9,7 +9,7 @@ from django.views import View
 
 from apps.accounts.forms import UserRegisterForm, VerifyOtpCodeForm, UserLoginForm
 from apps.accounts.models import OtpCode, User
-from apps.utils.otp import send_otp_code
+from apps.accounts.tasks import send_otp_code_task
 
 
 class UserRegisterView(View):
@@ -28,7 +28,7 @@ class UserRegisterView(View):
         if form.is_valid():
             cd = form.cleaned_data
             random_otp = random.randint(1000, 9999)
-            send_otp_code(cd['phone'], random_otp)
+            send_otp_code_task.delay(cd['phone'], random_otp)
             OtpCode.objects.create(phone_number=cd['phone'], code=random_otp)
 
             # save user info in session
