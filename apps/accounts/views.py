@@ -29,6 +29,8 @@ class UserRegisterView(View):
             cd = form.cleaned_data
             random_otp = random.randint(1000, 9999)
             send_otp_code_task.delay(cd['phone'], random_otp)
+
+            # create otp code instance for given phone_number
             OtpCode.objects.create(phone_number=cd['phone'], code=random_otp)
 
             # save user info in session
@@ -38,7 +40,7 @@ class UserRegisterView(View):
                 'full_name': cd['full_name'],
                 'password': cd['password']
             }
-            request.session.set_expiry(300)  # Session expires in 5 minutes
+            request.session.set_expiry(120)  # Session expires in 2 minutes
             messages.success(request, 'we send you otp code', extra_tags='success')
             return redirect('accounts:verify_otp_code')
         return render(request, self.template_name, {'form': form})
