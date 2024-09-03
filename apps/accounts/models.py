@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
 
 
 class OtpCode(BaseModel):
-    phone_number = models.CharField(max_length=11, verbose_name="Phone Number")
+    phone_number = models.CharField(max_length=11, unique=True, verbose_name="Phone Number")
     code = models.PositiveSmallIntegerField(verbose_name="OTP Code")
 
     def __str__(self):
