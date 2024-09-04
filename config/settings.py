@@ -47,6 +47,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'storages',
+    'django_celery_beat',
 ]
 
 LOCAL_APPS = [

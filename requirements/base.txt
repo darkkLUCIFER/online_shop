@@ -3,3 +3,4 @@ kavenegar==1.1.2
 python-dotenv==1.0.1
 Pillow==10.4.0
 celery==5.4.0
+django-celery-beat==2.7.0
