@@ -1,15 +1,18 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 
+from apps.orders.forms import CartAddForm
 from apps.products.models import Product
 
 
 class ProductDetailView(View):
-    form_class = 'products/detail.html'
+    template_name = 'products/detail.html'
+    form_class = CartAddForm
 
     def get(self, request, slug):
         product = get_object_or_404(Product, slug=slug)
         context = {
-            'product': product
+            'product': product,
+            'add_to_cart_form': self.form_class
         }
-        return render(request, self.form_class, context)
+        return render(request, self.template_name, context)
