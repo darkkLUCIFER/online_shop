@@ -19,7 +19,7 @@ class HomeView(View):
             products = Product.objects.filter(category__slug=category_slug)
         else:
             products = Product.objects.filter(available=True)
-        categories = Category.objects.filter(active=True)
+        categories = Category.objects.filter(active=True, is_sub=False)
         context = {
             'products': products,
             'categories': categories,

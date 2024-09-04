@@ -5,6 +5,9 @@ from apps.utils.base_model import BaseModel
 
 
 class Category(BaseModel):
+    parent_category = models.ForeignKey('self', on_delete=models.CASCADE, related_name='sub_categories', null=True,
+                                        blank=True, default=None, verbose_name='Parent category')
+    is_sub = models.BooleanField(default=False, verbose_name='Is subcategory')
     name = models.CharField(max_length=200, verbose_name='Name')
     slug = models.SlugField(max_length=200, unique=True, verbose_name='Slug')
     active = models.BooleanField(default=True, verbose_name='Active')
@@ -23,7 +26,7 @@ class Category(BaseModel):
 
 
 class Product(BaseModel):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', verbose_name='Category')
+    category = models.ManyToManyField(Category, related_name='products', verbose_name='Category')
     name = models.CharField(max_length=200, verbose_name='Name')
     slug = models.SlugField(max_length=200, unique=True, verbose_name='Slug')
     image = models.ImageField(upload_to='products/%Y/%m/%d/', verbose_name='Image')
