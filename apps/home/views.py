@@ -9,15 +9,20 @@ from django.views import View
 
 from apps.home.forms import UploadBucketObjectForm
 from apps.home.tasks import get_all_bucket_objects_task, delete_object_task, download_object_task, upload_object_task
-from apps.products.models import Product
+from apps.products.models import Product, Category
 from apps.utils.custom_mixins import IsAdminUserMixin
 
 
 class HomeView(View):
-    def get(self, request):
-        products = Product.objects.filter(available=True)
+    def get(self, request, category_slug=None):
+        if category_slug:
+            products = Product.objects.filter(category__slug=category_slug)
+        else:
+            products = Product.objects.filter(available=True)
+        categories = Category.objects.filter(active=True)
         context = {
-            'products': products
+            'products': products,
+            'categories': categories,
         }
         return render(request, 'home/home.html', context)
 

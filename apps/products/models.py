@@ -9,6 +9,9 @@ class Category(BaseModel):
     slug = models.SlugField(max_length=200, unique=True, verbose_name='Slug')
     active = models.BooleanField(default=True, verbose_name='Active')
 
+    def get_absolute_url(self):
+        return reverse('home:category-filter', kwargs={'category_slug': self.slug})
+
     def __str__(self):
         return f'{self.name}'
 
