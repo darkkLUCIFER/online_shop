@@ -10,7 +10,7 @@
     <p>{{ product.description }}</p>
     <br><br>
 
-    <form action="" method="post">
+    <form action="{% url 'orders:cart_add' product.id %}" method="post">
         {% csrf_token %}
         {{ add_to_cart_form.as_p }}
         <input type="submit" value="Add To Cart">
