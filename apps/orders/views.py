@@ -8,7 +8,7 @@ from apps.products.models import Product
 
 class CartView(View):
     def get(self, request):
-        cart = Cart(request)
+        cart = Cart.get_instance(request)
 
         context = {
             'cart': cart
@@ -30,4 +30,12 @@ class CartAddView(View):
             # add product to user cart
             Cart.get_instance(request).add(product, quantity)
 
+        return redirect('orders:cart')
+
+
+class CartRemoveView(View):
+    def get(self, request, product_id):
+        cart = Cart.get_instance(request)
+        product = get_object_or_404(Product, pk=product_id)
+        cart.remove(product)
         return redirect('orders:cart')
