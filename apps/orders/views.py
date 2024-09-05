@@ -8,7 +8,12 @@ from apps.products.models import Product
 
 class CartView(View):
     def get(self, request):
-        return render(request, 'orders/cart.html')
+        cart = Cart(request)
+
+        context = {
+            'cart': cart
+        }
+        return render(request, 'orders/cart.html', context)
 
 
 class CartAddView(View):

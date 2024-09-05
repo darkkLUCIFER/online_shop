@@ -1,3 +1,5 @@
+from apps.products.models import Product
+
 CART_SESSION_KEY = 'cart'
 
 
@@ -14,6 +16,17 @@ class Cart:
             cart_sessions = self.session[CART_SESSION_KEY] = {}
 
         self.cart = cart_sessions
+
+    def __iter__(self):
+        product_ids = self.cart.keys()
+        products = Product.objects.filter(id__in=product_ids)
+        cart = self.cart.copy()
+        for product in products:
+            cart[str(product.id)]['product_name'] = product.name
+
+        for item in cart.values():
+            item['total_price'] = int(item['price']) * item['quantity']
+            yield item
 
     @classmethod
     def get_instance(cls, request):
@@ -35,3 +48,6 @@ class Cart:
 
         self.cart[product_id]['quantity'] += quantity
         self.save_session()
+
+    def get_total_price(self):
+        return sum(int(item['price']) * item['quantity'] for item in self.cart.values())
