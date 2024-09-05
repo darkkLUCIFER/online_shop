@@ -28,6 +28,9 @@ class Cart:
             item['total_price'] = int(item['price']) * item['quantity']
             yield item
 
+    def __len__(self):
+        return len(self.cart)
+
     @classmethod
     def get_instance(cls, request):
         return Cart(request)
