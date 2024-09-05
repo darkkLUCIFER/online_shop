@@ -1,3 +1,4 @@
+from apps.orders.models import OrderItem
 from apps.products.models import Product
 
 CART_SESSION_KEY = 'cart'
@@ -60,3 +61,27 @@ class Cart:
         if product_id in self.cart:
             del self.cart[product_id]
             self.save_session()
+
+    def clear(self):
+        del self.session[CART_SESSION_KEY]
+        self.save_session()
+
+
+class OrderService:
+    """
+        handle functions for Order management
+    """
+
+    @staticmethod
+    def get_instance():
+        return OrderService()
+
+    def create(self, cart, order):
+        """
+            create new Order instance & clear the Cart
+        """
+        for item in cart:
+            OrderItem.objects.create(order=order, product=item['product'], price=item['price'],
+                                     quantity=item['quantity'])
+        # clean user cart
+        cart.clear()
