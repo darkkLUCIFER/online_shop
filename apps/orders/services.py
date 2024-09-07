@@ -2,8 +2,9 @@ import json
 import requests
 
 from django.conf import settings
+from django.utils import timezone
 
-from apps.orders.models import OrderItem, Order
+from apps.orders.models import OrderItem, Order, Coupon
 from apps.products.models import Product
 
 CART_SESSION_KEY = 'cart'
@@ -187,3 +188,28 @@ class ZarinpalService:
                 return {'status': False, 'code': str(response['Status'])}
         else:
             return {'status': False, 'code': f'HTTP {response.status_code}'}
+
+
+class CouponService:
+    """
+        handle functions for Coupon management
+    """
+
+    @staticmethod
+    def get_instance():
+        return CouponService()
+
+    def apply_coupon(self, coupon_code, order_id):
+        """
+            add coupon code to given order
+        """
+        now = timezone.now()
+
+        try:
+            coupon = Coupon.objects.get(code__exact=coupon_code, active=True, valid_from__lte=now, valid_to__gte=now)
+            order = Order.objects.get(pk=order_id)
+            order.coupon = coupon
+            order.save()
+            return True
+        except Coupon.DoesNotExist:
+            return False

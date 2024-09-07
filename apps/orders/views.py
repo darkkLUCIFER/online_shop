@@ -1,10 +1,11 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from apps.orders.forms import CartAddForm
-from apps.orders.models import Order, OrderItem
-from apps.orders.services import Cart, OrderService, ZarinpalService
+from apps.orders.forms import CartAddForm, CouponApplyForm
+from apps.orders.models import Order
+from apps.orders.services import Cart, OrderService, ZarinpalService, CouponService
 from apps.products.models import Product
 
 
@@ -54,10 +55,13 @@ class OrderCreateView(View, LoginRequiredMixin):
 
 
 class OrderDetailView(View, LoginRequiredMixin):
+    form_class = CouponApplyForm
+
     def get(self, request, order_id):
         order = get_object_or_404(Order, pk=order_id)
         context = {
-            'order': order
+            'order': order,
+            'form': self.form_class()
         }
         return render(request, 'orders/order.html', context)
 
@@ -96,3 +100,19 @@ class OrderVerifyView(LoginRequiredMixin, View):
             }
 
         return render(request, 'orders/verify.html', context)
+
+
+class CouponApplyView(LoginRequiredMixin, View):
+    form_class = CouponApplyForm
+
+    def post(self, request, order_id):
+        form = CouponApplyForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            code = cd['code']
+
+            result = CouponService.get_instance().apply_coupon(code, order_id)
+            if not result:
+                messages.error(request, 'Coupon does not exist', extra_tags='danger')
+
+            return redirect('orders:order_detail', order_id=order_id)
