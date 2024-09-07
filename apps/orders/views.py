@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from apps.orders.forms import CartAddForm, CouponApplyForm
 from apps.orders.models import Order
@@ -19,7 +19,8 @@ class CartView(View):
         return render(request, 'orders/cart.html', context)
 
 
-class CartAddView(View):
+class CartAddView(PermissionRequiredMixin, View):
+    permission_required = 'orders.add_order'
     form_class = CartAddForm
 
     def post(self, request, product_id):
