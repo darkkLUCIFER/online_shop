@@ -159,3 +159,31 @@ class ZarinpalService:
             return {'status': False, 'code': 'timeout'}
         except requests.exceptions.ConnectionError:
             return {'status': False, 'code': 'connection error'}
+
+    def verify(self):
+        order_id = self.request.session['order_pay']['order_id']
+        order = Order.objects.get(pk=int(order_id))
+        authority = self.request.GET.get('Authority')
+
+        data = {
+            "MerchantID": self.MERCHANT,
+            "Amount": order.get_total_price(),
+            "Authority": authority,
+        }
+        data = json.dumps(data)
+
+        # set content length by data
+        headers = {'content-type': 'application/json', 'content-length': str(len(data))}
+        response = requests.post(self.ZP_API_VERIFY, data=data, headers=headers)
+
+        if response.status_code == 200:
+            response = response.json()
+            if response['Status'] == 100:
+                # change order paid status
+                order.paid = True
+                order.save()
+                return {'status': True, 'RefID': response['RefID']}
+            else:
+                return {'status': False, 'code': str(response['Status'])}
+        else:
+            return {'status': False, 'code': f'HTTP {response.status_code}'}

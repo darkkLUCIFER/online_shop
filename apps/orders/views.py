@@ -79,3 +79,20 @@ class OrderPayView(LoginRequiredMixin, View):
             # todo: here you can save the error code for the order instance
             code = result['code']
             print(code)
+
+
+class OrderVerifyView(LoginRequiredMixin, View):
+    def get(self, request):
+        result = ZarinpalService.get_instance(request).verify()
+        if result['status']:
+            ref_id = result['RefID']
+            context = {
+                'ref_id': ref_id
+            }
+        else:
+            code = result['code']
+            context = {
+                'code': code
+            }
+
+        return render(request, 'orders/verify.html', context)

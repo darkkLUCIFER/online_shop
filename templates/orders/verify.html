@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if ref_id %}
+    <p>کد رهگیری پرداخت:{{ ref_id }}</p>
+{% else %}
+    <p>خطا در پرداخت:{{ code }}</p>
+{% endif %}
+</body>
+</html>
