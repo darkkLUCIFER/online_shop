@@ -187,3 +187,8 @@ else:
     # Use local storage for media files if not using cloud storage
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / "media"
+
+# ZARINPAL
+ZARINPAL_SANDBOX = os.environ.get('SANDBOX')
+ZARINPAL_MERCHANT = os.environ.get('MERCHANT')
+ZARINPAL_CALLBACKURL = "http://127.0.0.1:8000/orders/verify/"

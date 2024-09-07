@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from apps.orders.forms import CartAddForm
 from apps.orders.models import Order, OrderItem
-from apps.orders.services import Cart, OrderService
+from apps.orders.services import Cart, OrderService, ZarinpalService
 from apps.products.models import Product
 
 
@@ -60,3 +60,22 @@ class OrderDetailView(View, LoginRequiredMixin):
             'order': order
         }
         return render(request, 'orders/order.html', context)
+
+
+class OrderPayView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        order = Order.objects.get(pk=order_id)
+
+        # save order in session
+        request.session['order_pay'] = {
+            'order_id': order.id
+        }
+
+        result = ZarinpalService.get_instance(request).set_amount(order.get_total_price()).send_request()
+        if result['status']:
+            url = result['url']
+            return redirect(url)
+        else:
+            # todo: here you can save the error code for the order instance
+            code = result['code']
+            print(code)
