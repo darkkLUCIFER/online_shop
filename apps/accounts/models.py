@@ -1,6 +1,6 @@
 import datetime
 
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
@@ -8,7 +8,7 @@ from apps.accounts.managers import UserManager
 from apps.utils.base_model import BaseModel
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, verbose_name="Email")
     phone_number = models.CharField(max_length=11, unique=True, verbose_name="Phone Number")
     full_name = models.CharField(max_length=255, verbose_name="Full Name")
@@ -22,12 +22,6 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
 
     @property
     def is_staff(self):

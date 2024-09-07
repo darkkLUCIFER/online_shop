@@ -18,7 +18,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ["is_admin"]
     fieldsets = [
         (None, {"fields": ["email", "phone_number", "full_name", "password"]}),
-        ("Permissions", {"fields": ["is_admin", "is_active", "last_login"]}),
+        ("Permissions", {"fields": ["is_admin", "is_active", "is_superuser", "last_login", "groups", "user_permissions"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -27,14 +27,15 @@ class UserAdmin(BaseUserAdmin):
     ]
     search_fields = ["email", "full_name"]
     ordering = ["full_name"]
-    filter_horizontal = []
+    filter_horizontal = ['groups', 'user_permissions']
 
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
-admin.site.unregister(Group)
+# if you want to use Groups, comment the below line
+# admin.site.unregister(Group)
 
 
 @admin.register(OtpCode)
