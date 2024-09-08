@@ -102,6 +102,22 @@ DATABASES = {
     }
 }
 
+# CACHE
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+# Use the cache backend to store session data for faster access
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+# To store session data in both the cache and the database (fallback for cache misses),
+# uncomment the line below:
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
